@@ -1,0 +1,25 @@
+services:
+  remnawave-nginx:
+    image: nginx:latest
+    container_name: remnawave-nginx
+    hostname: remnawave-nginx
+    volumes:
+      - /opt/nginx/resolver.conf:/etc/nginx/conf.d/resolver.conf
+      # Base nginx configuration for remnawave panel itself.
+      - /opt/nginx/nginx.conf:/etc/nginx/conf.d/remnawave.conf
+      - /opt/nginx:/etc/nginx/remnawave:ro
+      # Configuration for the bot and its miniapp.
+      - /opt/tgb/nginx/nginx.conf:/etc/nginx/conf.d/tgb.conf
+      - /opt/tgb/nginx:/etc/nginx/tgb:ro
+      - /opt/webapp/bedolaga-cabinet/dist:/var/www/remnawave_bot_miniapp:ro
+    restart: always
+    ports:
+      - '0.0.0.0:443:443'
+    networks:
+      - remnawave-network
+
+networks:
+  remnawave-network:
+    name: remnawave-network
+    driver: bridge
+    external: true
